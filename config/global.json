@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "Quest Text Reader": {
+            "applicationId": "B6xry2nLRUxSE4nxue6q4xzS1A2WmleBgY2UAZEY", 
+            "masterKey": "hqEU9UbrmqpbgubSsL7zOXR7wdD8P1MDbWkv5pAU"
+        }, 
+        "_default": {
+            "link": "Quest Text Reader"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.0"
+    }
+}
