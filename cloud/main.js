@@ -25,10 +25,18 @@ function optionIdx(idx, errorText) {
  * @returns {Parse.Promise<Parse.Cloud.HTTPResponse>}
  */
 function scrap(questId) {
-  return Parse.Cloud.httpRequest({
-    method: "GET",
-    url: "http://www.thottbot.com/quest=" + questId
-  });
+  return new Parse.Query(OriginalResponse)
+    .equalTo("questId", questId)
+    .first()
+    .then(option)
+    .then(function (originalResponse) {
+      return originalResponse;
+    }, function () {
+      return Parse.Cloud.httpRequest({
+        method: "GET",
+        url: "http://www.thottbot.com/quest=" + questId
+      });
+    });
 }
 
 function extractText(response) {
