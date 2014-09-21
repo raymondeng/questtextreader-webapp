@@ -1,0 +1,407 @@
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+body {
+  font-family: "Roboto Slab", serif;
+  font-weight: bold;
+  background: #e3c99c;
+  color: #a0796e;
+}
+a {
+  cursor: pointer;
+  color: #e28b7d;
+}
+a:hover {
+  color: #cb7d71;
+}
+h1 {
+  display: none;
+}
+#remote-box {
+  height: 10vw;
+  background-color: rgba(0, 0, 0, 0.05);
+  display: table-row;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-box {
+    height: 10vh;
+  }
+}
+#remote {
+  text-align: center;
+  padding-top: 1vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote {
+    padding-top: 1vh;
+  }
+}
+.loading {
+  height: 10vw;
+  font-size: 6vw;
+  line-height: 10vw;
+  padding-left: 2vw;
+  padding-right: 2vw;
+  color: rgba(0, 0, 0, 0.1);
+}
+@media (max-aspect-ratio: 1/1) {
+  .loading {
+    height: 10vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  .loading {
+    font-size: 6vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  .loading {
+    line-height: 10vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  .loading {
+    padding-left: 2vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  .loading {
+    padding-right: 2vh;
+  }
+}
+#search-box {
+  height: 10vw;
+  background-color: rgba(0, 0, 0, 0.05);
+  display: table-row;
+  width: 100%;
+}
+@media (max-aspect-ratio: 1/1) {
+  #search-box {
+    height: 10vh;
+  }
+}
+#search-box input {
+  height: 10vw;
+  font-size: 6vw;
+  padding-left: 2vw;
+  padding-right: 2vw;
+  width: 100%;
+  border: none;
+  background: none;
+  outline: 0;
+  color: #755851;
+}
+@media (max-aspect-ratio: 1/1) {
+  #search-box input {
+    height: 10vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #search-box input {
+    font-size: 6vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #search-box input {
+    padding-left: 2vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #search-box input {
+    padding-right: 2vh;
+  }
+}
+#remote-stop,
+#remote-play {
+  width: 7.98vw;
+  height: 7.98vw;
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  border-radius: 100%;
+  outline: 0;
+  border: none;
+  color: #e3b28b;
+  background: #a0796e;
+  z-index: 2;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-stop,
+  #remote-play {
+    width: 7.98vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-stop,
+  #remote-play {
+    height: 7.98vh;
+  }
+}
+#remote-stop:hover,
+#remote-play:hover {
+  background: #987369;
+}
+#remote-stop span,
+#remote-play span {
+  font-size: 2.66vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-stop span,
+  #remote-play span {
+    font-size: 2.66vh;
+  }
+}
+#remote-prev {
+  width: 6vw;
+  height: 6vw;
+  display: inline-block;
+  text-align: center;
+  border-radius: 100%;
+  outline: 0;
+  border: none;
+  color: #e3b28b;
+  background: #a0796e;
+  z-index: 1;
+  position: relative;
+  right: -1.5vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-prev {
+    width: 6vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-prev {
+    height: 6vh;
+  }
+}
+#remote-prev:hover {
+  background: #987369;
+}
+#remote-prev span {
+  font-size: 2vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-prev span {
+    font-size: 2vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-prev {
+    right: -1.5vh;
+  }
+}
+#remote-prev span {
+  position: relative;
+  left: -0.6vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-prev span {
+    left: -0.6vh;
+  }
+}
+#remote-next {
+  width: 6vw;
+  height: 6vw;
+  display: inline-block;
+  text-align: center;
+  border-radius: 100%;
+  outline: 0;
+  border: none;
+  color: #e3b28b;
+  background: #a0796e;
+  z-index: 1;
+  position: relative;
+  left: -1.5vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-next {
+    width: 6vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-next {
+    height: 6vh;
+  }
+}
+#remote-next:hover {
+  background: #987369;
+}
+#remote-next span {
+  font-size: 2vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-next span {
+    font-size: 2vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-next {
+    left: -1.5vh;
+  }
+}
+#remote-next span {
+  position: relative;
+  right: -0.6vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #remote-next span {
+    right: -0.6vh;
+  }
+}
+#current-text {
+  height: 100%;
+  overflow: auto;
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #current-text {
+    padding-left: 2vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  #current-text {
+    padding-right: 2vh;
+  }
+}
+#current-text h2,
+#current-text span {
+  color: #d2b591;
+  font-weight: bold;
+}
+#current-text h2 {
+  font-size: 3vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #current-text h2 {
+    font-size: 3vh;
+  }
+}
+#current-text span {
+  font-size: 2vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  #current-text span {
+    font-size: 2vh;
+  }
+}
+#current-text .active,
+#current-text .active span {
+  color: #a0796e;
+}
+::-webkit-input-placeholder {
+  color: rgba(0, 0, 0, 0.1);
+}
+::-moz-placeholder {
+  color: rgba(0, 0, 0, 0.1);
+}
+:-ms-input-placeholder {
+  color: rgba(0, 0, 0, 0.1);
+}
+::placeholder {
+  color: rgba(0, 0, 0, 0.1);
+}
+tr {
+  cursor: pointer;
+}
+tr.active {
+  cursor: default;
+}
+.app {
+  width: 100%;
+  height: 100%;
+}
+.app .col-9,
+.app .col-3 {
+  float: left;
+  display: table;
+  height: 100%;
+}
+.app .col-9 {
+  width: 75%;
+}
+.app .col-3 {
+  width: 25%;
+  background: #e3b28b;
+}
+#play-list {
+  height: 100%;
+  overflow: auto;
+}
+table {
+  font-size: 1.5vw;
+  font-weight: bold;
+  width: 100%;
+}
+@media (max-aspect-ratio: 1/1) {
+  table {
+    font-size: 1.5vh;
+  }
+}
+table tr {
+  height: 3.5vw;
+}
+@media (max-aspect-ratio: 1/1) {
+  table tr {
+    height: 3.5vh;
+  }
+}
+table tr td {
+  padding-left: 1vw;
+  padding-right: 1vw;
+  color: #A0796E;
+}
+@media (max-aspect-ratio: 1/1) {
+  table tr td {
+    padding-left: 1vh;
+  }
+}
+@media (max-aspect-ratio: 1/1) {
+  table tr td {
+    padding-right: 1vh;
+  }
+}
+table tr:nth-child(2n) {
+  background: #d8a984;
+}
+table tr:nth-child(2n):hover {
+  background: #d2a581;
+}
+table tr:nth-child(2n+1) {
+  background: #cca07d;
+}
+table tr:nth-child(2n+1):hover {
+  background: #c79c7a;
+}
+table tr.active {
+  background: #E28B7D;
+}
+table tr.active:hover {
+  background: #E28B7D;
+}
+table tr.active td {
+  color: #E3C99C;
+}
+footer {
+  width: 100%;
+  height: 30px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 5px;
+  color: #a0796e;
+  background: #755851;
+}
+footer input,
+footer select {
+  background: none;
+  border: none;
+  color: #e3b28b;
+  outline: 0;
+  padding: 0 5px;
+  width: 125px;
+  margin-right: 10px;
+}

@@ -1,0 +1,256 @@
+@import 'helpers';
+
+@bg: #E3C99C;
+@right-color: #E3B28B;
+
+@red: #E28B7D;
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: "Roboto Slab", serif;
+  font-weight: bold;
+  background: @bg;
+  color: @btn-color;
+}
+
+a {
+  cursor: pointer;
+  color: @red;
+  &:hover {
+    color: shade(@red, 10%);
+  }
+}
+
+.app {
+}
+
+h1 {
+  display: none;
+}
+
+.row1() {
+  .height(10vw, 10vh);
+  background-color: rgba(0, 0, 0, 0.05);
+  display: table-row;
+}
+
+#remote-box {
+  .row1();
+}
+
+#remote {
+  text-align: center;
+  .padding-top(1vw, 1vh);
+}
+
+.loading {
+  .height(10vw, 10vh);
+  .font-size(6vw, 6vh);
+  .line-height(10vw, 10vh);
+  .padding-left(2vw, 2vh);
+  .padding-right(2vw, 2vh);
+  color: rgba(0, 0, 0, 0.1);
+}
+
+#search-box {
+  .row1();
+  width: 100%;
+  
+  input {
+    .height(10vw, 10vh);
+    .font-size(6vw, 6vh);
+    .padding-left(2vw, 2vh);
+    .padding-right(2vw, 2vh);
+    width: 100%;
+    border: none;
+    background: none;
+    outline: 0;
+    color: @text-color;
+  }
+}
+
+@btn-size: 6vw;
+@btn-size2: 6vh;
+
+@btn-color: #A0796E;
+
+.remote-btn(@size: @btn-size, @size2: @btn-size2, @color: @btn-color) {
+  .width(@size, @size2);
+  .height(@size, @size2);
+  display: inline-block;
+  position: relative;
+  text-align: center;
+  border-radius: 100%;
+  outline: 0;
+  border: none;
+  color: @right-color;
+  
+  background: @color;
+  &:hover {
+    background: shade(@color, 5%);
+  }
+
+  span {
+    .font-size(@size / 3, @size2 / 3);
+  }
+}
+
+dl {
+}
+
+#remote-stop, #remote-play {
+  .remote-btn(@btn-size * 1.33, @btn-size2 * 1.33);
+  z-index: 2;
+}
+
+
+#remote-prev {
+  .remote-btn();
+  z-index: 1;
+  position: relative;
+  .right(-1.5vw, -1.5vh);
+  span {
+    position: relative;
+    .left(-0.6vw, -0.6vh);
+  }
+}
+
+#remote-next {
+  .remote-btn();
+  z-index: 1;
+  position: relative;
+  .left(-1.5vw, -1.5vh);
+  span {
+    position: relative;
+    .right(-0.6vw, -0.6vh);
+  }
+}
+
+@text-color: #755851;
+
+#current-text {
+  height: 100%;
+  overflow: auto;
+  .padding-left(2vw, 2vh);
+  .padding-right(2vw, 2vh);
+
+  h2, span {
+    color: mix(@btn-color, @bg, 25%);
+    font-weight: bold;
+  }
+
+  h2 {
+    .font-size(3vw, 3vh);
+  }
+
+  span {
+    .font-size(2vw, 2vh);
+  }
+
+  .active {
+    &, & span {
+      color: @btn-color;
+    }
+  }
+}
+
+::placeholder {
+  color: rgba(0, 0, 0, 0.1);
+}
+
+tr {
+  cursor: pointer;
+}
+
+tr.active {
+  cursor: default;
+}
+
+.app {
+  width: 100%;
+  height: 100%;
+
+  .col-9, .col-3 {
+    float: left;
+    display: table;
+    height: 100%;
+  }
+
+  .col-9 {
+    width: 75%;
+  }
+
+  .col-3 {
+    width: 25%;
+    background: @right-color;
+  }
+}
+
+#play-list {
+  height: 100%;
+  overflow: auto;
+}
+
+table {
+  .font-size(1.5vw, 1.5vh);
+  font-weight: bold;
+  width: 100%;
+  tr {
+    .height(3.5vw, 3.5vh);
+
+    td {
+      .padding-left(1vw, 1vh);
+      .padding-right(1vw, 1vh);
+      color: #A0796E;
+    }
+
+    &:nth-child(2n) {
+      background: shade(@right-color, 5%); //rgba(0, 0, 0, 0.05);
+      &:hover {
+        background: shade(@right-color, 7.5%); //rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    &:nth-child(2n+1) {
+      background: shade(@right-color, 10%); //rgba(0, 0, 0, 0.05);
+      &:hover {
+        background: shade(@right-color, 12.5%); //rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    &.active {
+      background: #E28B7D;
+      &:hover {
+        background: #E28B7D;
+      }
+      td {
+        color: #E3C99C;
+      }
+    }
+  }
+}
+
+footer {
+  width: 100%;
+  height: 30px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  padding: 5px;
+  color: @btn-color;
+  background: @text-color;
+  
+  input, select {
+    background: none;
+    border: none;
+    color: @right-color;
+    outline: 0;
+    padding: 0 5px;
+    width: 125px;
+    margin-right: 10px;
+  }
+}

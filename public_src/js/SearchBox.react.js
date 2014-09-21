@@ -25,7 +25,7 @@ var SearchBox = React.createClass({
       <input
       type="text"
       min="0"
-      placeholder="Quest Id"
+      placeholder={this.props.placeholder ? this.props.placeholder : "Paste link here..."}
       value={this.props.value}
       ref="input"
       onChange={this.onChange}

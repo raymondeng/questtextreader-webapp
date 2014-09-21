@@ -9,6 +9,13 @@ var startsWith = c.startsWith;
 
 var PlayList = {
   getInitialState: function () {
+    /*
+    window.speechSynthesis.onvoiceschanged = function() {
+      this.maleVoice = window.speechSynthesis.getVoices()[1];
+      this.femaleVoice = window.speechSynthesis.getVoices()[2];
+    }.bind(this);
+    */
+    
     return {
       current: 0,
       list: [],
@@ -29,16 +36,11 @@ var PlayList = {
       return questId;
     }.bind(this));
 
-    // TODO: deal with duplicates
     this.state.loading = false;
     this.state.error = false;
-    this.state.list = concat(this.state.list, _.without(questIds, this.state.list));
+    this.state.list = concat(this.state.list, _.difference(questIds, this.state.list));
 
-    if (!this.state.isPlaying && this.state.current < this.state.list.length) {
-      this.state.isPlaying = true;
-      this.state.isStopped = false;
-      this.play();
-    }
+    this.play();
 
     this.forceUpdate();
   },
@@ -46,37 +48,67 @@ var PlayList = {
   stop: function () {
     this.state.isStopped = true;
     this.state.isPlaying = false;
+    this.state.currentSentence = 0;
     speechSynthesis.cancel();
     this.forceUpdate();
   },
 
-  play: function () {
-    var questId = this.state.list[this.state.current];
-    var questText = this.state.questTexts[questId];
-    this.speak(questText)
-      .then(function () {
-        this.state.current++;
-        if (this.state.current < this.state.list.length) {
-          setTimeout(function () {
-            this.play();
-          }.bind(this), TIME_BETWEEN_QUEST_SPEAK);
-        } else {
-          this.state.isPlaying = false;
-        }
-        this.forceUpdate();
-      }.bind(this));
+  prev: function () {
+    this.jumpTo(this.state.current - 1);
   },
 
-  speak: function (questText) {
-    var text = questText.get('title') + '.\n' + (questText.get('text')
+  next: function () {
+    this.jumpTo(this.state.current + 1);
+  },
+  
+  jumpTo: function (current) {
+    this.stop();
+    if (current >= 0 && current <= this.state.list.length) {
+      this.state.current = current;
+    }
+    setTimeout(function () {
+      this.play();
+    }.bind(this), TIME_BETWEEN_QUEST_SPEAK / 2);
+    this.forceUpdate();
+  },
+
+  play: function () {
+    if (!this.state.isPlaying && this.state.current < this.state.list.length) {
+      this.state.isPlaying = true;
+      this.state.isStopped = false;
+      this.forceUpdate();
+      this.loop();
+    }
+  },
+
+  loop: function () {
+    var questId = this.state.list[this.state.current];
+    var questText = this.state.questTexts[questId];
+    this.speak(questText).then(function () {
+      this.state.current++;
+      if (this.state.current < this.state.list.length) {
+        this.state.currentSentence = 0;
+        setTimeout(function () {
+          this.loop();
+        }.bind(this), TIME_BETWEEN_QUEST_SPEAK);
+      } else {
+        this.state.isPlaying = false;
+      }
+      this.forceUpdate();
+    }.bind(this));
+  },
+  
+  prepareText: function (text) {
+    return text
       .replace(/<race>/g, this.state.race)
       .replace(/<class>/g, this.state.class)
       .replace(/<name>/g, this.state.name)
-      .replace(/<.*>/g, '')); // TODO: Read in a different voice
+      .replace(/<.*>/g, ''); // TODO: Read in a different voice
+  },
 
-    this.setState({
-      currentText: text
-    });
+  speak: function (questText) {
+    var text = questText.get('title') + '.\n' + this.prepareText(questText.get('text'));
+    this.state.currentSentence = 0; // needs to be set immediately
 
     // TODO: split further for long sentences
     var chunks = text.split(/[.!?]\s/g).map(function (chunk) {
@@ -86,13 +118,15 @@ var PlayList = {
     var p = new Parse.Promise();
 
     // What follows is a load of crap that works:
-    var i = 0;
     var utts = chunks.map(function (chunk) {
       var utt = new SpeechSynthesisUtterance(chunk);
+      // TODO: get the correct voice?
+      //utt.voice = this.maleVoice;
       utt.onend = function () {
-        if (!this.isStopped) {
-          i++;
+        if (!this.state.isStopped) {
+          this.state.currentSentence++;
           innerSpeak();
+          this.forceUpdate();
         } else {
           p.reject("Stopped");
         }
@@ -100,8 +134,8 @@ var PlayList = {
       return utt;
     }, this);
 
-    function innerSpeak() {
-      var utt = utts[i];
+    var innerSpeak = function () {
+      var utt = utts[this.state.currentSentence];
       if (utt) {
         console.log(utt); //IMPORTANT!! Do not remove: Logging the object out fixes some onend firing issues.
 
@@ -111,7 +145,7 @@ var PlayList = {
       } else {
         p.resolve('Spoken');
       }
-    }
+    }.bind(this);
 
     innerSpeak();
 
