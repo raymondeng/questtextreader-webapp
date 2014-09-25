@@ -1,6 +1,6 @@
-./config
 node_modules
 bower_components
 .DS_Store
 *.iml
 .idea
+config/global.json
