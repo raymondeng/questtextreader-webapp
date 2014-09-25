@@ -75,7 +75,7 @@ var App = React.createClass({
           }.bind(this));
       }.bind(this))
       .then(function (qs) {
-        return qs.length > 0 ? Parse.Cloud.run("quests", {questIds: qs}) : [];
+        return qs.length > 0 ? Parse.Cloud.run("quests", {questIds: qs}) : Parse.Promise.error("No new quests...");
       })
       .then(this.addAll, function rejected() {
         this.setState({
