@@ -65,6 +65,7 @@ var App = React.createClass({displayName: 'App',
     return {
       term: '',
       name: "Name",
+      sex: 1,
       race: "Race",
       class: "Class",
       error: false,
@@ -97,6 +98,7 @@ var App = React.createClass({displayName: 'App',
       .then(function (data) {
         this.setState({
           name: c.makeNamePronounceable(data.name),
+          sex: data.sex,
           class: data.class,
           race: data.race,
           term: '',
@@ -127,6 +129,7 @@ var App = React.createClass({displayName: 'App',
 
   validate: function (data) {
     return (data.hasOwnProperty('name') &&
+      data.hasOwnProperty('sex') &&
       data.hasOwnProperty('class') &&
       data.hasOwnProperty('race') &&
       data.hasOwnProperty('questLog')) ?
@@ -235,7 +238,7 @@ var App = React.createClass({displayName: 'App',
             PlayList({parent: this})
           )
         ), 
-        Footer({name: this.state.name, race: this.state.race, class: this.state.class, createOnChange: this.createOnChange})
+        Footer({name: this.state.name, sex: this.state.sex, race: this.state.race, class: this.state.class, createOnChange: this.createOnChange})
       ));
   }
 });
@@ -301,6 +304,12 @@ var Footer = React.createClass({displayName: 'Footer',
       React.DOM.footer(null, 
         React.DOM.label({htmlFor: "name"}, "Name:"), 
         React.DOM.input({id: "name", ref: "name", type: "text", value: this.props.name, onChange: this.props.createOnChange('name')}), 
+        React.DOM.label({htmlFor: "sex"}, "Sex:"), 
+        React.DOM.select({id: "sex", ref: "sex", value: this.props.sex, onChange: this.props.createOnChange("sex")}, 
+          React.DOM.option({value: "1"}, "Neutrum"), 
+          React.DOM.option({value: "2"}, "Male"), 
+          React.DOM.option({value: "3"}, "Female")
+        ), 
         React.DOM.label({htmlFor: "race"}, "Race:"), 
         React.DOM.select({id: "race", ref: "race", value: this.props.race, onChange: this.props.createOnChange("race")}, 
           React.DOM.option(null, "Pandaren"), 
@@ -539,7 +548,12 @@ var PlayList = {
       .replace(/<race>/g, this.state.race)
       .replace(/<class>/g, this.state.class)
       .replace(/<name>/g, this.state.name)
-      .replace(/<.*>/g, ''); // TODO: Read in a different voice
+      .replace(/<(.*)\/(.*)>/g, function (all, male, female) {
+        return this.state.sex == "3" ? female : male;
+      }.bind(this))
+      .replace(/<(.*)>/g, function (all, cap) {
+        return cap;
+      });
   },
 
   speak: function (questText) {
@@ -556,8 +570,6 @@ var PlayList = {
     // What follows is a load of crap that works:
     var utts = chunks.map(function (chunk) {
       var utt = new SpeechSynthesisUtterance(chunk);
-      // TODO: get the correct voice?
-      //utt.voice = this.maleVoice;
       utt.onend = function () {
         if (!this.state.isStopped) {
           this.state.currentSentence++;

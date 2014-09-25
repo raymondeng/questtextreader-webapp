@@ -106,7 +106,12 @@ var PlayList = {
       .replace(/<race>/g, this.state.race)
       .replace(/<class>/g, this.state.class)
       .replace(/<name>/g, this.state.name)
-      .replace(/<.*>/g, ''); // TODO: Read in a different voice
+      .replace(/<(.*)\/(.*)>/g, function (all, male, female) {
+        return this.state.sex == "3" ? female : male;
+      }.bind(this))
+      .replace(/<(.*)>/g, function (all, cap) {
+        return cap;
+      });
   },
 
   speak: function (questText) {
@@ -123,8 +128,6 @@ var PlayList = {
     // What follows is a load of crap that works:
     var utts = chunks.map(function (chunk) {
       var utt = new SpeechSynthesisUtterance(chunk);
-      // TODO: get the correct voice?
-      //utt.voice = this.maleVoice;
       utt.onend = function () {
         if (!this.state.isStopped) {
           this.state.currentSentence++;

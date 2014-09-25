@@ -24,6 +24,7 @@ var App = React.createClass({
     return {
       term: '',
       name: "Name",
+      sex: 1,
       race: "Race",
       class: "Class",
       error: false,
@@ -56,6 +57,7 @@ var App = React.createClass({
       .then(function (data) {
         this.setState({
           name: c.makeNamePronounceable(data.name),
+          sex: data.sex,
           class: data.class,
           race: data.race,
           term: '',
@@ -86,6 +88,7 @@ var App = React.createClass({
 
   validate: function (data) {
     return (data.hasOwnProperty('name') &&
+      data.hasOwnProperty('sex') &&
       data.hasOwnProperty('class') &&
       data.hasOwnProperty('race') &&
       data.hasOwnProperty('questLog')) ?
@@ -194,7 +197,7 @@ var App = React.createClass({
             <PlayList parent={this} />
           </div>
         </div>
-        <Footer name={this.state.name} race={this.state.race} class={this.state.class} createOnChange={this.createOnChange} />
+        <Footer name={this.state.name} sex={this.state.sex} race={this.state.race} class={this.state.class} createOnChange={this.createOnChange} />
       </div>);
   }
 });

@@ -6,6 +6,12 @@ var Footer = React.createClass({
       <footer>
         <label htmlFor="name">Name:</label>
         <input id="name" ref="name" type="text" value={this.props.name} onChange={this.props.createOnChange('name')} />
+        <label htmlFor="sex">Sex:</label>
+        <select id="sex" ref="sex" value={this.props.sex} onChange={this.props.createOnChange("sex")}>
+          <option value="1">Neutrum</option>
+          <option value="2">Male</option>
+          <option value="3">Female</option>
+        </select>
         <label htmlFor="race">Race:</label>
         <select id="race" ref="race" value={this.props.race} onChange={this.props.createOnChange("race")}>
           <option>Pandaren</option>
