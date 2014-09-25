@@ -116,7 +116,7 @@ var App = React.createClass({displayName: 'App',
           }.bind(this));
       }.bind(this))
       .then(function (qs) {
-        return qs.length > 0 ? Parse.Cloud.run("quests", {questIds: qs}) : [];
+        return qs.length > 0 ? Parse.Cloud.run("quests", {questIds: qs}) : Parse.Promise.error("No new quests...");
       })
       .then(this.addAll, function rejected() {
         this.setState({
@@ -269,13 +269,13 @@ var CurrentText = React.createClass({displayName: 'CurrentText',
       currentTitle = React.DOM.h2({className: "active"}, "WoW Quest Text Reader");
       currentText =
         React.DOM.div(null, 
-          React.DOM.span({className: "active"}, "Welcome! This web app can read WoW quest texts for you. "), 
+          React.DOM.span({className: "active"}, "Welcome! This web app can read quest texts to you. "), 
           React.DOM.span({className: "active"}, 
             React.DOM.span(null, "If you haven't done so already, please install the "), 
-            React.DOM.a({href: "#"}, "Quest Text Reader addon"), 
+            React.DOM.a({href: "http://www.curse.com/addons/wow/quest-text-reader"}, "Quest Text Reader addon"), 
             React.DOM.span(null, ". ")
           ), 
-          React.DOM.span({className: "active"}, "This addon will generate links that tell this app what to read. "), 
+          React.DOM.span({className: "active"}, "This addon will generate individual links that tell this app which quest texts to read. "), 
           React.DOM.span({className: "active"}, 
             React.DOM.span(null, "You can also "), 
             React.DOM.a({onClick: this.props.parent.onSample}, "listen to a sample"), 
