@@ -1,93 +1,9 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 /** @jsx React.DOM */
-
-var BASE_URL = 'http://' + location.host;
-
-var c = require('./common');
-var option = c.option;
-var optionIdx = c.optionIdx;
-var concat = c.concat;
-var map = c.map;
-var startsWith = c.startsWith;
-
-var PlayListMixin = require('./PlayListMixin');
-
-var SearchBox = require('./SearchBox.react');
+  
+var App = require('./App.react');
 
 Parse.initialize("B6xry2nLRUxSE4nxue6q4xzS1A2WmleBgY2UAZEY", "IeDF4F0c65lXnvgSDH1AiWguWKd6rt2DWbkD6EjE");
-
-function makeNamePronounceable(name) {
-  return name
-    .replace(/^[ÁÀÂÄÅ]/, 'A')
-    .replace(/[áàâäå]/g, 'a')
-    .replace(/^Æ/, 'Ae')
-    .replace(/æ/g, 'ae')
-    .replace(/^Ç/, 'C')
-    .replace(/ç/g, 'c')
-    .replace(/^[ÉÈÊË]/, 'E')
-    .replace(/[éèêë]/g, 'e')
-    .replace(/^[ÍÌÎÏ]/, 'I')
-    .replace(/[íìîï]/g, 'i')
-    .replace(/^Ñ/, 'N')
-    .replace(/ñ/g, 'n')
-    .replace(/^[ÓÒÔÖØ]/, 'O')
-    .replace(/[óòôöø]/g, 'o')
-    .replace(/^ÚÙÛÜ/, 'U')
-    .replace(/[úùûü]/g, 'u')
-    .replace(/^Ý/, 'Y')
-    .replace(/[ýÿ]/g, 'y')
-    .replace(/^ß/, 'B')
-    .replace(/ß/g, 'ss')
-}
-
-function getHiddenProp() {
-  var prefixes = ['webkit', 'moz', 'ms', 'o'];
-
-  // if 'hidden' is natively supported just return it
-  if ('hidden' in document) return 'hidden';
-
-  // otherwise loop over all the known prefixes until we find one
-  for (var i = 0; i < prefixes.length; i++) {
-    if ((prefixes[i] + 'Hidden') in document)
-      return prefixes[i] + 'Hidden';
-  }
-
-  // otherwise it's not supported
-  return null;
-}
-
-function isHidden() {
-  var prop = getHiddenProp();
-  if (!prop) return false;
-
-  return document[prop];
-}
-
-var RemoteButton = React.createClass({displayName: 'RemoteButton',
-  render: function () {
-    return (
-      React.DOM.button({id: "remote-" + this.props.id, className: "btn btn-default", onClick: this.props.onClick}, 
-        React.DOM.span({className: "glyphicon glyphicon-" + this.props.icon})
-      )
-      );
-  }
-});
-
-var Remote = React.createClass({displayName: 'Remote',
-  render: function () {
-    var middle = this.props.parent.state.isPlaying ?
-      RemoteButton({id: "stop", icon: "stop", onClick: this.props.parent.onStopClick}) :
-      RemoteButton({id: "play", icon: "play", onClick: this.props.parent.onPlayClick});
-
-    return (
-      React.DOM.div({id: "remote"}, 
-        RemoteButton({id: "prev", icon: "backward", onClick: this.props.parent.onPrevClick}), 
-        middle, 
-        RemoteButton({id: "next", icon: "forward", onClick: this.props.parent.onNextClick})
-      )
-      );
-  }
-});
 
 navigator.sayswho = (function () {
   var ua = navigator.userAgent, tem,
@@ -105,6 +21,43 @@ navigator.sayswho = (function () {
   return M.join(' ');
 })();
 
+var browser = navigator.sayswho.split(' ')[0];
+if (browser === 'Chrome' || browser === 'Safari') {
+  var version = navigator.sayswho.split(' ')[1];
+  var major = version.split('.')[0];
+  if (browser === 'Chrome' && major >= 33 ||
+    browser === 'Safari' && major >= 7) {
+
+    document.addEventListener('DOMContentLoaded', function () {
+      React.renderComponent(
+        App(null),
+        document.body
+      );
+    });
+  }
+}
+
+
+},{"./App.react":2}],2:[function(require,module,exports){
+/** @jsx React.DOM */
+  
+var BASE_URL = 'http://' + location.host;
+  
+var c = require('./common');
+var option = c.option;
+var optionIdx = c.optionIdx;
+var concat = c.concat;
+var map = c.map;
+var startsWith = c.startsWith;
+  
+var PlayListMixin = require('./PlayListMixin');
+  
+var SearchBox = require('./SearchBox.react');
+var CurrentText = require('./CurrentText.react');
+var Remote = require('./Remote.react');
+var PlayList = require('./PlayList.react');
+var Footer = require('./Footer.react');
+  
 var App = React.createClass({displayName: 'App',
   mixins: [PlayListMixin],
 
@@ -120,13 +73,11 @@ var App = React.createClass({displayName: 'App',
   },
 
   componentDidMount: function () {
-
     if (location.search.trim() !== '') {
       this.parse(location.search);
     }
 
-    // use the property name to generate the prefixed event name
-    var visProp = getHiddenProp();
+    var visProp = c.getHiddenProp();
     if (visProp) {
       var evtname = visProp.replace(/[H|h]idden/, '') + 'visibilitychange';
       document.addEventListener(evtname, this.visChange);
@@ -134,7 +85,7 @@ var App = React.createClass({displayName: 'App',
   },
 
   visChange: function () {
-    if (!isHidden()) {
+    if (!c.isHidden()) {
       this.refs["searchBox"].refs["input"].getDOMNode().focus();
     }
   },
@@ -145,19 +96,25 @@ var App = React.createClass({displayName: 'App',
       .then(this.validate)
       .then(function (data) {
         this.setState({
-          name: makeNamePronounceable(data.name),
+          name: c.makeNamePronounceable(data.name),
           class: data.class,
           race: data.race,
           term: '',
           loading: true
         });
-        var qs = JSON.parse(data.qs);
-        return _.difference(qs, this.state.list);
+
+        return option(data['questLog'], "`questLog` parameter missing")
+          .then(function (questLog) {
+            try {
+              questLog = JSON.parse('[' + questLog + ']');
+            } catch (e) {
+              return Parse.Promise.error(e);
+            }
+            return _.difference(questLog, this.state.list);
+          }.bind(this));
       }.bind(this))
       .then(function (qs) {
-        return qs.length > 0 ?
-          Parse.Cloud.run("quests", {questIds: qs}) :
-          Parse.Promise.error('No new quests');
+        return qs.length > 0 ? Parse.Cloud.run("quests", {questIds: qs}) : [];
       })
       .then(this.addAll, function rejected() {
         this.setState({
@@ -172,7 +129,7 @@ var App = React.createClass({displayName: 'App',
     return (data.hasOwnProperty('name') &&
       data.hasOwnProperty('class') &&
       data.hasOwnProperty('race') &&
-      data.hasOwnProperty('qs')) ?
+      data.hasOwnProperty('questLog')) ?
       Parse.Promise.as(data) : Parse.Promise.error("Invalid data");
   },
 
@@ -216,6 +173,8 @@ var App = React.createClass({displayName: 'App',
           error: true
         });
       }.bind(this));
+    } else {
+      this.setState({term: ''});
     }
   },
 
@@ -237,7 +196,7 @@ var App = React.createClass({displayName: 'App',
 
   createOnPlaylistClick: function (i) {
     return this.state.current !== i ? function () {
-      this.jumpTo(i);
+      PlayListMixin.jumpTo.call(this, i);
     }.bind(this) : null;
   },
 
@@ -245,149 +204,233 @@ var App = React.createClass({displayName: 'App',
     this.readQuestId(9999);
   },
 
+  createOnChange: function (prop) {
+    return function (e) {
+      var state = {};
+      state[prop] = e.target.value;
+      this.setState(state);
+    }.bind(this)
+  },
+
   render: function () {
-    var table = map(this.state.list, function (questId, i) {
-      return (
-        React.DOM.tr({key: questId, className: this.state.current === i ? 'active' : '', onClick: this.createOnPlaylistClick(i)}, 
-          React.DOM.td(null, this.state.questTexts[questId].get("title"))
-        ));
-    }.bind(this));
+    return (
+      React.DOM.div({className: "app"}, 
+        React.DOM.div({className: "col"}, 
+          React.DOM.div({className: "col-9"}, 
+            React.DOM.header({id: "search-box"}, 
+              SearchBox({
+              ref: "searchBox", 
+              value: this.state.term, 
+              loading: this.state.loading, 
+              error: this.state.error, 
+              onChange: this.onInputChange, 
+              onSubmit: this.onSubmit})
+            ), 
+            CurrentText({parent: this})
+          ), 
+          React.DOM.div({className: "col-3"}, 
+            React.DOM.header({id: "remote-box"}, 
+              Remote({parent: this})
+            ), 
+            PlayList({parent: this})
+          )
+        ), 
+        Footer({name: this.state.name, race: this.state.race, class: this.state.class, createOnChange: this.createOnChange})
+      ));
+  }
+});
+
+module.exports = App;
+
+},{"./CurrentText.react":3,"./Footer.react":4,"./PlayList.react":5,"./PlayListMixin":6,"./Remote.react":7,"./SearchBox.react":8,"./common":9}],3:[function(require,module,exports){
+/** @jsx React.DOM */
+
+var CurrentText = React.createClass({displayName: 'CurrentText',
+  render: function () {
+    var state = this.props.parent.state;
 
     var currentTitle, currentText;
-    var currentQuestId = this.state.list[this.state.current];
-    var currentQuestText = this.state.questTexts[currentQuestId];
+
+    var currentQuestId = state.list[state.current];
+    var currentQuestText = state.questTexts[currentQuestId];
+
     if (currentQuestText) {
-      currentTitle = React.DOM.h2({className: this.state.currentSentence === 0 ? 'active' : ''}, currentQuestText.get('title'));
-      currentText = this.prepareText(currentQuestText.get('text'))
+      currentTitle = React.DOM.h2({className: state.currentSentence === 0 ? 'active' : ''}, currentQuestText.get('title'));
+      currentText = this.props.parent.prepareText(currentQuestText.get('text'))
         .split(/[.!?]\s/g)
         .map(function (sentence, i) {
-          return React.DOM.span({className: this.state.currentSentence === (i + 1) ? 'active' : ''}, sentence, ". ");
+          return React.DOM.span({key: 'sentance-' + i, className: state.currentSentence === (i + 1) ? 'active' : ''}, sentence, ". ");
         }, this);
-    } else {
+    }
+    else {
       currentTitle = React.DOM.h2({className: "active"}, "WoW Quest Text Reader");
       currentText =
         React.DOM.div(null, 
-          React.DOM.span({className: "active"}, "Welcome! This web app can read WoW quest texts to you. "), 
+          React.DOM.span({className: "active"}, "Welcome! This web app can read WoW quest texts for you. "), 
           React.DOM.span({className: "active"}, 
             React.DOM.span(null, "If you haven't done so already, please install the "), 
             React.DOM.a({href: "#"}, "Quest Text Reader addon"), 
             React.DOM.span(null, ". ")
           ), 
-          React.DOM.span({className: "active"}, "This addon will generate links that will tell this app what to read. "), 
+          React.DOM.span({className: "active"}, "This addon will generate links that tell this app what to read. "), 
           React.DOM.span({className: "active"}, 
             React.DOM.span(null, "You can also "), 
-            React.DOM.a({onClick: this.onSample}, "listen to a sample"), 
+            React.DOM.a({onClick: this.props.parent.onSample}, "listen to a sample"), 
             React.DOM.span(null, ". ")
           )
         );
-
-    }
-
-    var searchBox;
-    if (this.state.loading) {
-      searchBox = React.DOM.div({className: "loading"}, "Loading...");
-    } else if (this.state.error) {
-      searchBox = SearchBox({ref: "searchBox", placeholder: "Error...", value: this.state.term, onChange: this.onInputChange, onSubmit: this.onSubmit});
-    } else {
-      searchBox = SearchBox({ref: "searchBox", value: this.state.term, onChange: this.onInputChange, onSubmit: this.onSubmit});
     }
 
     return (
-      React.DOM.div({className: "app"}, 
-        React.DOM.div({className: "col-9"}, 
-          React.DOM.h1(null, "WoW Quest Text Reader"), 
-          React.DOM.div({id: "search-box"}, 
-            searchBox
-          ), 
-          React.DOM.div({id: "current-text"}, 
-            currentTitle, 
-            currentText
-          )
-        ), 
-        React.DOM.div({className: "col-3"}, 
-          React.DOM.div({id: "remote-box"}, 
-            Remote({parent: this})
-          ), 
-          React.DOM.div({id: "play-list"}, 
-            React.DOM.table(null, 
-              React.DOM.tbody(null, 
-              table
-              )
-            )
-          )
-        ), 
-        React.DOM.footer(null, 
-          React.DOM.label({htmlFor: "name"}, "Name:"), 
-          React.DOM.input({id: "name", ref: "name", type: "text", value: this.state.name, onChange: this.onNameChange}), 
-          React.DOM.label({htmlFor: "race"}, "Race:"), 
-          React.DOM.select({id: "race", ref: "race", value: this.state.race, onChange: this.onRaceChange}, 
-            React.DOM.option(null, "Pandaren"), 
-            React.DOM.option(null, "Worgen"), 
-            React.DOM.option(null, "Goblin"), 
-            React.DOM.option(null, "Draenei"), 
-            React.DOM.option(null, "Blood Elf"), 
-            React.DOM.option(null, "Dwarf"), 
-            React.DOM.option(null, "Orc"), 
-            React.DOM.option(null, "Gnome"), 
-            React.DOM.option(null, "Tauren"), 
-            React.DOM.option(null, "Human"), 
-            React.DOM.option(null, "Troll"), 
-            React.DOM.option(null, "Night Elf"), 
-            React.DOM.option({selected: true}, "Undead")
-          ), 
-          React.DOM.label({htmlFor: "class"}, "Class:"), 
-          React.DOM.select({id: "class", ref: "class", value: this.state.class, onChange: this.onClassChange}, 
-            React.DOM.option(null, "Warrior"), 
-            React.DOM.option(null, "Paladin"), 
-            React.DOM.option(null, "Hunter"), 
-            React.DOM.option(null, "Rogue"), 
-            React.DOM.option(null, "Priest"), 
-            React.DOM.option(null, "Death Knight"), 
-            React.DOM.option(null, "Shaman"), 
-            React.DOM.option(null, "Mage"), 
-            React.DOM.option(null, "Warlock"), 
-            React.DOM.option(null, "Monk"), 
-            React.DOM.option({selected: true}, "Druid")
-          ), 
-          React.DOM.span({className: "pull-right"}, 
-            React.DOM.span(null, "By "), 
-            React.DOM.a({href: "https://twitter.com/cell303"}, "@cell303")
-          )
-        )
-      ));
-  },
-
-  onNameChange: function (e) {
-    this.setState({name: e.target.value});
-  },
-
-  onClassChange: function (e) {
-    this.setState({class: e.target.value});
-  },
-
-  onRaceChange: function (e) {
-    this.setState({race: e.target.value});
+      React.DOM.section({id: "current-text"}, 
+        currentTitle, 
+        currentText
+      )
+      );
   }
 });
 
-var browser = navigator.sayswho.split(' ')[0];
-if (browser === 'Chrome' || browser === 'Safari') {
-  var version = navigator.sayswho.split(' ')[1];
-  var major = version.split('.')[0];
-  if (browser === 'Chrome' && major >= 33 ||
-    browser === 'Safari' && major >= 7) {
+module.exports = CurrentText;
 
-    document.addEventListener('DOMContentLoaded', function () {
-      React.renderComponent(
-        App(null),
-        document.body
-      );
-    });
+},{}],4:[function(require,module,exports){
+/** @jsx React.DOM */
+  
+var Footer = React.createClass({displayName: 'Footer',
+  render: function () {
+    return (
+      React.DOM.footer(null, 
+        React.DOM.label({htmlFor: "name"}, "Name:"), 
+        React.DOM.input({id: "name", ref: "name", type: "text", value: this.props.name, onChange: this.props.createOnChange('name')}), 
+        React.DOM.label({htmlFor: "race"}, "Race:"), 
+        React.DOM.select({id: "race", ref: "race", value: this.props.race, onChange: this.props.createOnChange("race")}, 
+          React.DOM.option(null, "Pandaren"), 
+          React.DOM.option(null, "Worgen"), 
+          React.DOM.option(null, "Goblin"), 
+          React.DOM.option(null, "Draenei"), 
+          React.DOM.option(null, "Blood Elf"), 
+          React.DOM.option(null, "Dwarf"), 
+          React.DOM.option(null, "Orc"), 
+          React.DOM.option(null, "Gnome"), 
+          React.DOM.option(null, "Tauren"), 
+          React.DOM.option(null, "Human"), 
+          React.DOM.option(null, "Troll"), 
+          React.DOM.option(null, "Night Elf"), 
+          React.DOM.option(null, "Undead")
+        ), 
+        React.DOM.label({htmlFor: "class"}, "Class:"), 
+        React.DOM.select({id: "class", ref: "class", value: this.props.class, onChange: this.props.createOnChange('class')}, 
+          React.DOM.option(null, "Warrior"), 
+          React.DOM.option(null, "Paladin"), 
+          React.DOM.option(null, "Hunter"), 
+          React.DOM.option(null, "Rogue"), 
+          React.DOM.option(null, "Priest"), 
+          React.DOM.option(null, "Death Knight"), 
+          React.DOM.option(null, "Shaman"), 
+          React.DOM.option(null, "Mage"), 
+          React.DOM.option(null, "Warlock"), 
+          React.DOM.option(null, "Monk"), 
+          React.DOM.option(null, "Druid")
+        ), 
+        React.DOM.span({className: "pull-right"}, 
+          React.DOM.span(null, "By "), 
+          React.DOM.a({href: "https://twitter.com/cell303"}, "@cell303")
+        )
+      ));
   }
-}
+});
 
+module.exports = Footer;
 
-},{"./PlayListMixin":2,"./SearchBox.react":3,"./common":4}],2:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
+/** @jsx React.DOM */
+
+var c = require('./common');
+var option = c.option;
+var optionIdx = c.optionIdx;
+var concat = c.concat;
+var map = c.map;
+var startsWith = c.startsWith;
+
+var GoogleAd = React.createClass({displayName: 'GoogleAd',
+  componentDidMount: function () {
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  },
+
+  render: function () {
+    var style = {
+      display: 'inline-block',
+      width: this.props.width,
+      height: this.props.height
+    };
+
+    return (
+      React.DOM.div({className: "ad", style: style}, 
+        React.DOM.div({className: "ad-fallback", style: style}, 
+          this.props.children
+        ), 
+        React.DOM.ins({className: "adsbygoogle", 
+        style: style, 
+        'data-ad-client': this.props['data-ad-client'], 
+        'data-ad-slot': this.props['data-ad-slot']}
+        )
+      )
+      );
+  }
+});
+
+var AdStub = React.createClass({displayName: 'AdStub',
+  render: function () {
+    return React.DOM.div({className: "ad"});
+  }
+});
+
+var PlayList = React.createClass({displayName: 'PlayList',
+  componentWillUpdate: function () {
+    var node = this.refs['scroll'].getDOMNode();
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+  },
+
+  componentDidUpdate: function () {
+    if (this.shouldScrollBottom) {
+      var node = this.refs['scroll'].getDOMNode();
+      node.scrollTop = node.scrollHeight
+    }
+  },
+
+  render: function () {
+    var table = map(this.props.parent.state.list, function (questId, i) {
+      return (
+        React.DOM.tr({key: questId, className: this.props.parent.state.current === i ? 'active' : '', onClick: this.props.parent.createOnPlaylistClick(i)}, 
+          React.DOM.td(null, this.props.parent.state.questTexts[questId].get("title"))
+        ));
+    }.bind(this));
+
+    return (
+      React.DOM.section({id: "play-list"}, 
+        React.DOM.div({className: "my-ad"}, 
+          GoogleAd({
+          width: 336, 
+          height: 280, 
+          'data-ad-client': "ca-pub-0860966331181710", 
+          'data-ad-slot': "9893878972"
+          }, 
+            React.DOM.span(null, "Deactivate your ad blocker to make this go away.")
+          )
+        ), 
+        React.DOM.div({className: "table-wrapper", ref: "scroll"}, 
+          React.DOM.table(null, 
+            React.DOM.tbody(null, 
+                table
+            )
+          )
+        )
+      ));
+  }
+});
+
+module.exports = PlayList;
+
+},{"./common":9}],6:[function(require,module,exports){
 var TIME_BETWEEN_QUEST_SPEAK = 1250;
 
 var c = require('./common');
@@ -399,6 +442,7 @@ var startsWith = c.startsWith;
 
 var PlayList = {
   getInitialState: function () {
+    
     /*
     window.speechSynthesis.onvoiceschanged = function() {
       this.maleVoice = window.speechSynthesis.getVoices()[1];
@@ -432,7 +476,9 @@ var PlayList = {
 
     this.play();
 
-    this.forceUpdate();
+    this.forceUpdate(function () {
+      this.refs["searchBox"].refs["input"].getDOMNode().focus();
+    });
   },
 
   stop: function () {
@@ -545,7 +591,38 @@ var PlayList = {
 
 module.exports = PlayList;
 
-},{"./common":4}],3:[function(require,module,exports){
+},{"./common":9}],7:[function(require,module,exports){
+/** @jsx React.DOM */
+  
+var RemoteButton = React.createClass({displayName: 'RemoteButton',
+  render: function () {
+    return (
+      React.DOM.button({id: "remote-" + this.props.id, className: "btn btn-default", onClick: this.props.onClick}, 
+        React.DOM.span({className: "glyphicon glyphicon-" + this.props.icon})
+      )
+      );
+  }
+});
+
+var Remote = React.createClass({displayName: 'Remote',
+  render: function () {
+    var middle = this.props.parent.state.isPlaying ?
+      RemoteButton({id: "stop", icon: "stop", onClick: this.props.parent.onStopClick}) :
+      RemoteButton({id: "play", icon: "play", onClick: this.props.parent.onPlayClick});
+
+    return (
+      React.DOM.div({id: "remote"}, 
+        RemoteButton({id: "prev", icon: "backward", onClick: this.props.parent.onPrevClick}), 
+        middle, 
+        RemoteButton({id: "next", icon: "forward", onClick: this.props.parent.onNextClick})
+      )
+      );
+  }
+});
+
+module.exports = Remote;
+
+},{}],8:[function(require,module,exports){
 /** @jsx React.DOM */
   
 var c = require('./common');
@@ -569,11 +646,21 @@ var SearchBox = React.createClass({displayName: 'SearchBox',
   },
 
   render: function () {
+
+    var message;
+    if (this.props.loading) {
+      message = "Loading...";
+    } else if (this.props.error) {
+      message = "Error..."
+    } else {
+      message = "Paste link here..."
+    }
+
     return (
       React.DOM.input({
       type: "text", 
       min: "0", 
-      placeholder: this.props.placeholder ? this.props.placeholder : "Paste link here...", 
+      placeholder: message, 
       value: this.props.value, 
       ref: "input", 
       onChange: this.onChange, 
@@ -584,7 +671,7 @@ var SearchBox = React.createClass({displayName: 'SearchBox',
 
 module.exports = SearchBox;
 
-},{"./common":4}],4:[function(require,module,exports){
+},{"./common":9}],9:[function(require,module,exports){
 function option(some, errorText) {
   return some ?
     Parse.Promise.as(some) :
@@ -609,12 +696,62 @@ function startsWith(base, str) {
   return base.slice(0, str.length) === str;
 }
 
+function makeNamePronounceable(name) {
+  return name
+    .replace(/^[ÁÀÂÄÅ]/, 'A')
+    .replace(/[áàâäå]/g, 'a')
+    .replace(/^Æ/, 'Ae')
+    .replace(/æ/g, 'ae')
+    .replace(/^Ç/, 'C')
+    .replace(/ç/g, 'c')
+    .replace(/^[ÉÈÊË]/, 'E')
+    .replace(/[éèêë]/g, 'e')
+    .replace(/^[ÍÌÎÏ]/, 'I')
+    .replace(/[íìîï]/g, 'i')
+    .replace(/^Ñ/, 'N')
+    .replace(/ñ/g, 'n')
+    .replace(/^[ÓÒÔÖØ]/, 'O')
+    .replace(/[óòôöø]/g, 'o')
+    .replace(/^ÚÙÛÜ/, 'U')
+    .replace(/[úùûü]/g, 'u')
+    .replace(/^Ý/, 'Y')
+    .replace(/[ýÿ]/g, 'y')
+    .replace(/^ß/, 'B')
+    .replace(/ß/g, 'ss')
+}
+
+function getHiddenProp() {
+  var prefixes = ['webkit', 'moz', 'ms', 'o'];
+
+  // if 'hidden' is natively supported just return it
+  if ('hidden' in document) return 'hidden';
+
+  // otherwise loop over all the known prefixes until we find one
+  for (var i = 0; i < prefixes.length; i++) {
+    if ((prefixes[i] + 'Hidden') in document)
+      return prefixes[i] + 'Hidden';
+  }
+
+  // otherwise it's not supported
+  return null;
+}
+
+function isHidden() {
+  var prop = getHiddenProp();
+  if (!prop) return false;
+
+  return document[prop];
+}
+
 module.exports = {
   option: option,
   optionIdx: optionIdx,
   concat: concat,
   map: map,
-  startsWith: startsWith
+  startsWith: startsWith,
+  makeNamePronounceable: makeNamePronounceable,
+  getHiddenProp: getHiddenProp,
+  isHidden: isHidden
 };
 
 },{}]},{},[1]);

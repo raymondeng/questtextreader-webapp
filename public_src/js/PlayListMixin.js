@@ -9,6 +9,7 @@ var startsWith = c.startsWith;
 
 var PlayList = {
   getInitialState: function () {
+    
     /*
     window.speechSynthesis.onvoiceschanged = function() {
       this.maleVoice = window.speechSynthesis.getVoices()[1];
@@ -42,7 +43,9 @@ var PlayList = {
 
     this.play();
 
-    this.forceUpdate();
+    this.forceUpdate(function () {
+      this.refs["searchBox"].refs["input"].getDOMNode().focus();
+    });
   },
 
   stop: function () {

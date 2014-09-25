@@ -21,11 +21,21 @@ var SearchBox = React.createClass({
   },
 
   render: function () {
+
+    var message;
+    if (this.props.loading) {
+      message = "Loading...";
+    } else if (this.props.error) {
+      message = "Error..."
+    } else {
+      message = "Paste link here..."
+    }
+
     return (
       <input
       type="text"
       min="0"
-      placeholder={this.props.placeholder ? this.props.placeholder : "Paste link here..."}
+      placeholder={message}
       value={this.props.value}
       ref="input"
       onChange={this.onChange}

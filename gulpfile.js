@@ -45,5 +45,5 @@ gulp.task('watch', function () {
   gulp.watch('public_src/js/**/*.js', ['js']);
 });
 
-gulp.task('default', ['copy', 'watch']);
+gulp.task('default', ['copy', 'less', 'js', 'watch']);
 
