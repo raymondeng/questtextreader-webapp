@@ -27,6 +27,7 @@ function optionIdx(idx, errorText) {
 function scrap(questId) {
   return new Parse.Query(OriginalResponse)
     .equalTo("questId", questId)
+    .equalTo("version", 2)
     .first()
     .then(option)
     .then(function (originalResponse) {
@@ -42,8 +43,8 @@ function scrap(questId) {
 function extractText(response) {
   var text = response.text;
 
-  var h3Description = '<h3>Description</h3>';
-  var h3DescriptionEnd = '<h3>';
+  var h3Description = 'Description</h2>';
+  var h3DescriptionEnd = '<h2';
 
   return optionIdx(text.indexOf(h3Description), "Description not found")
     .then(function (idx) {
@@ -62,7 +63,7 @@ function extractText(response) {
 function extractTitle(response) {
   var text = response.text;
 
-  var titleStart = '<h1>';
+  var titleStart = '<h1 class="heading-size-1">';
   var titleEnd = '</h1>';
 
   return optionIdx(text.indexOf(titleStart), "Title start not found")
@@ -86,17 +87,27 @@ function extract(questId, response) {
   var originalResponse = new OriginalResponse();
   originalResponse.save({
     questId: questId,
-    text: response['text']
+    text: response['text'],
+    version: 2
   });
 
   return Parse.Promise.when(extractTitle(response), extractText(response))
     .then(function (title, text) {
-      var qt = new QuestText();
-      return qt.save({
-        questId: questId,
-        title: title,
-        text: text
-      });
+      return new Parse.Query(QuestText)
+        .equalTo("questId", questId)
+        .first()
+        .then(option)
+        .then(function (questText) {
+          console.warn("Quest with id " + questId + " already exists. Not saving");
+          return questText;
+        }, function () {
+          var qt = new QuestText();
+          return qt.save({
+            questId: questId,
+            title: title,
+            text: text
+          });
+        });
     });
 }
 
