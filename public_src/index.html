@@ -1,9 +1,10 @@
 <html>
 <head>
-    <title>WoW Quest Text Reader</title>
+    <title>Quest Text Reader</title>
+    <meta name="description" content="This web app can read WoW quest texts to you.">
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    
+
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700,100,300' rel='stylesheet' type='text/css'>
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link href="css/css.css" rel="stylesheet" type="text/css">
@@ -16,7 +17,16 @@
     <script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
-Looks like your browser does not support speech synthesis.
-<a href="http://caniuse.com/#feat=speech-synthesis">List of browsers that support the Speech Synthesis API</a>.
+<div class="container-fluid">
+    <h1>Quest Text Reader</h1>
+
+    <p>NOTE: This web app only works with <a href="https://www.google.com/chrome/browser/">Chrome</a> and <a
+            href="https://www.apple.com/safari/">Safari</a> at the moment!</p>
+
+    <p>The reason is that the web app uses the <a href="https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html">HTML5
+        Speech Synthesis API</a> to generate the sound output.
+        This API is currently only supported by Chrome and Safari.
+        However, the API is a open standard and will eventually be available in other browsers as well.</p>
+</div>
 </body>
 </html>

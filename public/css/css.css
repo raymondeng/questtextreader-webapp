@@ -9,6 +9,14 @@ body {
   background: #e3c99c;
   color: #a0796e;
 }
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
 a {
   cursor: pointer;
   color: #e28b7d;

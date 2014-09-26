@@ -276,18 +276,18 @@ var CurrentText = React.createClass({displayName: 'CurrentText',
         }, this);
     }
     else {
-      currentTitle = React.DOM.h2({className: "active"}, "WoW Quest Text Reader");
+      currentTitle = React.DOM.h2({className: "active"}, "Quest Text Reader");
       currentText =
         React.DOM.div(null, 
-          React.DOM.span({className: "active"}, "Welcome! This web app can read quest texts to you. "), 
+          React.DOM.span({className: "active"}, "This web app reads WoW quest texts to you. "), 
           React.DOM.span({className: "active"}, 
             React.DOM.span(null, "If you haven't done so already, please install the "), 
             React.DOM.a({href: "http://www.curse.com/addons/wow/quest-text-reader"}, "Quest Text Reader addon"), 
             React.DOM.span(null, ". ")
           ), 
-          React.DOM.span({className: "active"}, "This addon will generate individual links that tell this app which quest texts to read. "), 
+          React.DOM.span({className: "active"}, "This addon will generate personalized links that tell this app which quest texts to read. "), 
           React.DOM.span({className: "active"}, 
-            React.DOM.span(null, "You can also "), 
+            React.DOM.span(null, "You can "), 
             React.DOM.a({onClick: this.props.parent.onSample}, "listen to a sample"), 
             React.DOM.span(null, ". ")
           )
