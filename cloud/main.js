@@ -124,6 +124,8 @@ function getQuestText(questId) {
 }
 
 Parse.Cloud.define("quests", function (request, response) {
+  Parse.Cloud.useMasterKey();
+  
   option(request.params['questIds'], "questIds missing")
     .then(function (questIds) {
       return Parse.Promise.when(questIds.map(Number).map(getQuestText));
@@ -134,6 +136,8 @@ Parse.Cloud.define("quests", function (request, response) {
 });
 
 Parse.Cloud.define("quest", function (request, response) {
+  Parse.Cloud.useMasterKey();
+  
   option(request.params['questId'], "questId missing")
     .then(Number)
     .then(getQuestText)
@@ -146,6 +150,7 @@ var Counter = Parse.Object.extend("Counter");
 
 Parse.Cloud.job("scrap", function (request, status) {
   Parse.Cloud.useMasterKey();
+  
   withConfig(function (config) {
     option(request.params['questId'])
       .then(function (questId) {
