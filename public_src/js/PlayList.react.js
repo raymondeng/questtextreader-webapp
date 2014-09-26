@@ -70,7 +70,6 @@ var PlayList = React.createClass({
           data-ad-client="ca-pub-0860966331181710"
           data-ad-slot="9893878972"
           >
-            <span>Deactivate your ad blocker to make this go away.</span>
           </GoogleAd>
         </div>
         <div className="table-wrapper" ref="scroll">

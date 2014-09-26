@@ -422,8 +422,7 @@ var PlayList = React.createClass({displayName: 'PlayList',
           height: 280, 
           'data-ad-client': "ca-pub-0860966331181710", 
           'data-ad-slot': "9893878972"
-          }, 
-            React.DOM.span(null, "Deactivate your ad blocker to make this go away.")
+          }
           )
         ), 
         React.DOM.div({className: "table-wrapper", ref: "scroll"}, 

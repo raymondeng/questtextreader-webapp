@@ -351,15 +351,16 @@ footer select {
   position: absolute;
   top: 0;
   left: 0;
-  background: url("../img/bieber.jpg");
-}
-.my-ad .ad .ad-fallback span {
-  font-family: "Comic Sans MS", cursive, sans-serif;
-  font-weight: normal;
-  color: #fff;
-  text-shadow: 0 0 5px #000;
-  font-size: 36px;
-  position: relative;
-  z-index: 2;
-  opacity: 0.33;
+  /*
+      span {
+        font-family: "Comic Sans MS", cursive, sans-serif;
+        font-weight: normal;
+        color: #fff;
+        text-shadow: 0 0 5px #000;
+        font-size: 36px;
+        position: relative;
+        z-index: 2;
+        opacity: 0.33;
+      }
+      */
 }
