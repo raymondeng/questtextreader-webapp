@@ -46,7 +46,7 @@ var App = React.createClass({
 
   visChange: function () {
     if (!c.isHidden()) {
-      this.refs["searchBox"].refs["input"].getDOMNode().focus();
+      this.focusInput();
     }
   },
 
@@ -139,31 +139,41 @@ var App = React.createClass({
       this.setState({term: ''});
     }
   },
+  
+  focusInput: function () {
+    this.refs["searchBox"].refs["input"].getDOMNode().focus();
+  },
 
   onPlayClick: function () {
     PlayListMixin.play.call(this);
+    this.focusInput();
   },
 
   onStopClick: function () {
     PlayListMixin.stop.call(this);
+    this.focusInput();
   },
 
   onPrevClick: function () {
     PlayListMixin.prev.call(this);
+    this.focusInput();
   },
 
   onNextClick: function () {
     PlayListMixin.next.call(this);
+    this.focusInput();
   },
 
   createOnPlaylistClick: function (i) {
     return this.state.current !== i ? function () {
       PlayListMixin.jumpTo.call(this, i);
+      this.focusInput();
     }.bind(this) : null;
   },
 
   onSample: function () {
     this.readQuestId(9999);
+    this.focusInput();
   },
 
   createOnChange: function (prop) {

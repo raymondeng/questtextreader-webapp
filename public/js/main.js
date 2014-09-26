@@ -87,7 +87,7 @@ var App = React.createClass({displayName: 'App',
 
   visChange: function () {
     if (!c.isHidden()) {
-      this.refs["searchBox"].refs["input"].getDOMNode().focus();
+      this.focusInput();
     }
   },
 
@@ -180,31 +180,41 @@ var App = React.createClass({displayName: 'App',
       this.setState({term: ''});
     }
   },
+  
+  focusInput: function () {
+    this.refs["searchBox"].refs["input"].getDOMNode().focus();
+  },
 
   onPlayClick: function () {
     PlayListMixin.play.call(this);
+    this.focusInput();
   },
 
   onStopClick: function () {
     PlayListMixin.stop.call(this);
+    this.focusInput();
   },
 
   onPrevClick: function () {
     PlayListMixin.prev.call(this);
+    this.focusInput();
   },
 
   onNextClick: function () {
     PlayListMixin.next.call(this);
+    this.focusInput();
   },
 
   createOnPlaylistClick: function (i) {
     return this.state.current !== i ? function () {
       PlayListMixin.jumpTo.call(this, i);
+      this.focusInput();
     }.bind(this) : null;
   },
 
   onSample: function () {
     this.readQuestId(9999);
+    this.focusInput();
   },
 
   createOnChange: function (prop) {
@@ -485,7 +495,7 @@ var PlayList = {
     this.play();
 
     this.forceUpdate(function () {
-      this.refs["searchBox"].refs["input"].getDOMNode().focus();
+      this.focusInput();
     });
   },
 
@@ -494,7 +504,9 @@ var PlayList = {
     this.state.isPlaying = false;
     this.state.currentSentence = 0;
     speechSynthesis.cancel();
-    this.forceUpdate();
+    this.forceUpdate(function () {
+      this.focusInput();
+    });
   },
 
   prev: function () {
@@ -513,15 +525,20 @@ var PlayList = {
     setTimeout(function () {
       this.play();
     }.bind(this), TIME_BETWEEN_QUEST_SPEAK / 2);
-    this.forceUpdate();
+    
+    this.forceUpdate(function () {
+      this.focusInput();
+    });
   },
 
   play: function () {
     if (!this.state.isPlaying && this.state.current < this.state.list.length) {
       this.state.isPlaying = true;
       this.state.isStopped = false;
-      this.forceUpdate();
       this.loop();
+      this.forceUpdate(function () {
+        this.focusInput();
+      });
     }
   },
 
@@ -573,7 +590,9 @@ var PlayList = {
         if (!this.state.isStopped) {
           this.state.currentSentence++;
           innerSpeak();
-          this.forceUpdate();
+          this.forceUpdate(function () {
+            this.focusInput();
+          });
         } else {
           p.reject("Stopped");
         }
