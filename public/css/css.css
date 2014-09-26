@@ -15,6 +15,7 @@ a {
 }
 a:hover {
   color: #cb7d71;
+  text-decoration: none;
 }
 #remote {
   text-align: center;
