@@ -206,10 +206,10 @@ var App = React.createClass({displayName: 'App',
   },
 
   createOnPlaylistClick: function (i) {
-    return this.state.current !== i ? function () {
+    return function () {
       PlayListMixin.jumpTo.call(this, i);
       this.focusInput();
-    }.bind(this) : null;
+    }.bind(this);
   },
 
   onSample: function () {
@@ -255,7 +255,7 @@ var App = React.createClass({displayName: 'App',
 
 module.exports = App;
 
-},{"./CurrentText.react":3,"./Footer.react":4,"./PlayList.react":5,"./PlayListMixin":6,"./Remote.react":7,"./SearchBox.react":8,"./common":9}],3:[function(require,module,exports){
+},{"./CurrentText.react":3,"./Footer.react":4,"./PlayList.react":6,"./PlayListMixin":7,"./Remote.react":8,"./SearchBox.react":9,"./common":10}],3:[function(require,module,exports){
 /** @jsx React.DOM */
 
 var CurrentText = React.createClass({displayName: 'CurrentText',
@@ -362,14 +362,7 @@ module.exports = Footer;
 
 },{}],5:[function(require,module,exports){
 /** @jsx React.DOM */
-
-var c = require('./common');
-var option = c.option;
-var optionIdx = c.optionIdx;
-var concat = c.concat;
-var map = c.map;
-var startsWith = c.startsWith;
-
+  
 var GoogleAd = React.createClass({displayName: 'GoogleAd',
   componentDidMount: function () {
     (adsbygoogle = window.adsbygoogle || []).push({});
@@ -397,11 +390,19 @@ var GoogleAd = React.createClass({displayName: 'GoogleAd',
   }
 });
 
-var AdStub = React.createClass({displayName: 'AdStub',
-  render: function () {
-    return React.DOM.div({className: "ad"});
-  }
-});
+module.exports = GoogleAd;
+
+},{}],6:[function(require,module,exports){
+/** @jsx React.DOM */
+
+var c = require('./common');
+var option = c.option;
+var optionIdx = c.optionIdx;
+var concat = c.concat;
+var map = c.map;
+var startsWith = c.startsWith;
+
+var GoogleAd = require("./GoogleAd.react");
 
 var PlayList = React.createClass({displayName: 'PlayList',
   componentWillUpdate: function () {
@@ -419,8 +420,9 @@ var PlayList = React.createClass({displayName: 'PlayList',
   render: function () {
     var table = map(this.props.parent.state.list, function (questId, i) {
       return (
-        React.DOM.tr({key: questId, className: this.props.parent.state.current === i ? 'active' : '', onClick: this.props.parent.createOnPlaylistClick(i)}, 
-          React.DOM.td(null, this.props.parent.state.questTexts[questId].get("title"))
+        React.DOM.tr({key: questId, className: this.props.parent.state.current === i ? 'active' : ''}, 
+          React.DOM.td({onClick: this.props.parent.createOnPlaylistClick(i)}, this.props.parent.state.questTexts[questId].get("title")), 
+          React.DOM.td({className: "wowhead"}, React.DOM.a({href: "//www.wowhead.com/quest=" + questId, target: "_blank"}))
         ));
     }.bind(this));
 
@@ -446,9 +448,17 @@ var PlayList = React.createClass({displayName: 'PlayList',
   }
 });
 
+/*
+ var AdStub = React.createClass({
+ render: function () {
+ return <div className="ad" />;
+ }
+ });
+ */
+
 module.exports = PlayList;
 
-},{"./common":9}],6:[function(require,module,exports){
+},{"./GoogleAd.react":5,"./common":10}],7:[function(require,module,exports){
 var TIME_BETWEEN_QUEST_SPEAK = 1250;
 
 var c = require('./common');
@@ -621,7 +631,7 @@ var PlayList = {
 
 module.exports = PlayList;
 
-},{"./common":9}],7:[function(require,module,exports){
+},{"./common":10}],8:[function(require,module,exports){
 /** @jsx React.DOM */
   
 var RemoteButton = React.createClass({displayName: 'RemoteButton',
@@ -652,7 +662,7 @@ var Remote = React.createClass({displayName: 'Remote',
 
 module.exports = Remote;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /** @jsx React.DOM */
   
 var c = require('./common');
@@ -701,7 +711,7 @@ var SearchBox = React.createClass({displayName: 'SearchBox',
 
 module.exports = SearchBox;
 
-},{"./common":9}],9:[function(require,module,exports){
+},{"./common":10}],10:[function(require,module,exports){
 function option(some, errorText) {
   return some ?
     Parse.Promise.as(some) :

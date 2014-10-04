@@ -141,14 +141,6 @@ a {
   color: rgba(0, 0, 0, 0.1);
 }
 
-tr {
-  cursor: pointer;
-}
-
-tr.active {
-  cursor: default;
-}
-
 .app {
   width: 100%;
   height: 100%;
@@ -216,10 +208,27 @@ table {
   
   tr {
     height: 45px;
-
+    
+    td:first-child {
+      cursor: pointer;
+    }
+    
     td {
       padding: 6px 10px;
       color: #A0796E;
+    }
+    
+    td.wowhead {
+      width: 40px;
+      background: rgba(0, 0, 0, 0.05);
+      
+      a {
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        background-size: 28px 28px;
+        background-image: url('../img/Icon-wowhead-48x48.png');
+      }
     }
 
     &:nth-child(2n) {

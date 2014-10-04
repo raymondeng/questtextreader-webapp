@@ -201,12 +201,6 @@ a:hover {
 ::placeholder {
   color: rgba(0, 0, 0, 0.1);
 }
-tr {
-  cursor: pointer;
-}
-tr.active {
-  cursor: default;
-}
 .app {
   width: 100%;
   height: 100%;
@@ -304,9 +298,23 @@ table {
 table tr {
   height: 45px;
 }
+table tr td:first-child {
+  cursor: pointer;
+}
 table tr td {
   padding: 6px 10px;
   color: #A0796E;
+}
+table tr td.wowhead {
+  width: 40px;
+  background: rgba(0, 0, 0, 0.05);
+}
+table tr td.wowhead a {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background-size: 28px 28px;
+  background-image: url('../img/Icon-wowhead-48x48.png');
 }
 table tr:nth-child(2n) {
   background: #d8a984;

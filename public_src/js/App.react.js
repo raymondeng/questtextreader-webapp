@@ -165,10 +165,10 @@ var App = React.createClass({
   },
 
   createOnPlaylistClick: function (i) {
-    return this.state.current !== i ? function () {
+    return function () {
       PlayListMixin.jumpTo.call(this, i);
       this.focusInput();
-    }.bind(this) : null;
+    }.bind(this);
   },
 
   onSample: function () {
